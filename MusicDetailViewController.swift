@@ -388,7 +388,7 @@ class MusicDetailViewController: UIViewController, UITableViewDelegate, UITableV
         } else {
             guard let customAlertVC = customAlertVC else { return }
             customAlertVC.musicDetail = musicDetailDict
-            let popupVC = PopupViewController(contentController: customAlertVC, position: .bottom(0), popupWidth: view.frame.size.width, popupHeight: 380)
+            let popupVC = PopupViewController(contentController: customAlertVC, position: .bottom(0), popupWidth: view.frame.size.width, popupHeight: 350)
             customAlertVC.delegateTimerTap = self
             popupVC.backgroundAlpha = 0.3
             popupVC.backgroundColor = .black
