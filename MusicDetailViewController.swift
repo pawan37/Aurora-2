@@ -780,6 +780,7 @@ class MusicDetailViewController: UIViewController, UITableViewDelegate, UITableV
         if minutes == 0 && seconds == 00
         {
             let timerValue = UserDefaults.standard.object(forKey: "timerValues")  as! Int
+            totalSecond = timerValue * 60
             self.timer_Lbl.text = String(timerValue) + ":00"
         }
         else
