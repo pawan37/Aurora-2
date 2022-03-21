@@ -8,19 +8,21 @@
 import UIKit
 import AVFoundation
 import AVKit
+import Alamofire
 
 class SettingViewController: UIViewController {
     
     @IBOutlet weak var tableview_Ctrl: UITableView!
     @IBOutlet weak var bgView_Ctrl: UIView!
     @IBOutlet weak var videoBg_Ctrl: UIView!
-    let titleArray = ["Feedback","Manage downloads","","Rate us in the App Store","FAQs","Terms and Conditions","About"]
+    var titleArray = ["Feedback","Manage downloads","","Rate us in the App Store"]
     var avPlayer: AVPlayer!
     var avpController = AVPlayerViewController()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        getDynamicOption()
        // bgView_Ctrl.layer.cornerRadius = 30
      //   bgView_Ctrl.layer.maskedCorners = [.layerMinXMinYCorner]
     }
@@ -40,6 +42,40 @@ class SettingViewController: UIViewController {
     @IBAction func backBtn_Action(_ sender: Any)
     {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    func getDynamicOption()
+    {
+        var baseUrl : String = ""
+        baseUrl = Constant.serverURL + "appStaticPages"
+       // baseUrl = "https://www.aurorasleepmusic.com/_functions/getReviews?musicID=eternalom"
+        Alamofire.request(baseUrl, method : .get, parameters: nil, headers: nil)
+            .responseJSON
+            { response in
+                print(response)
+                if String(describing: response.result) == "SUCCESS"
+                {
+                    MBProgressHUD.hide(for: self.view, animated: true)
+                    if(response.response?.statusCode == 200)
+                    {
+                        let tempArray = (response.result.value! as! NSDictionary).object(forKey: "appStaticPages") as? NSArray
+                        for i in 0..<tempArray!.count {
+                            let tempDict = tempArray?.object(at: i) as! NSDictionary
+                            print(tempDict)
+                            self.titleArray.append(tempDict.object(forKey: "pageTitle") as? String ?? "")
+                        }
+                        self.tableview_Ctrl.reloadData()
+                    }
+                    else
+                    {
+                        supportingfuction.showMessageHudWithMessage("No Items Found." as NSString,delay: 2.0)
+                    }
+                }
+                else
+                {
+                     supportingfuction.showMessageHudWithMessage("No Items Found." as NSString,delay: 2.0)
+                }
+            }
     }
     
 }
